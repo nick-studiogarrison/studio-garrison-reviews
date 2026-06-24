@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  .gr-widget * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .gr-widget {
+    font-family: 'DM Sans', sans-serif;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 16px;
+  }
+
+  /* Header */
+  .gr-header {
+    text-align: center;
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #e8e4df;
+  }
+  .gr-score {
+    font-family: 'DM Serif Display', serif;
+    font-size: 44px;
+    color: #1a1a1a;
+    line-height: 1;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .gr-stars {
+    display: inline-flex;
+    gap: 3px;
+    margin-bottom: 6px;
+  }
+  .gr-star { color: #f5b942; font-size: 18px; }
+  .gr-star.empty { color: #ddd; }
+  .gr-count {
+    display: block;
+    font-size: 13px;
+    color: #999;
+  }
+
+  /* Grid */
+  .gr-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Card */
+  .gr-card {
+    background: #ffffff;
+    border: 1px solid #e8e4df;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .gr-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .gr-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    color: #fff;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .gr-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .gr-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gr-date { font-size: 11px; color: #aaa; margin-top: 1px; }
+  .gr-card-stars {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+  }
+  .gr-card-stars .gr-star { font-size: 12px; }
+  .gr-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555;
+    font-weight: 300;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* CTA card */
+  .gr-cta-card {
+    background: #f8f7f5;
+    border: 1.5px dashed #e8e4df;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .gr-cta-card svg { width: 32px; height: 32px; }
+  .gr-cta-card p { font-size: 13px; color: #555; line-height: 1.5; font-weight: 300; }
+  .gr-cta-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #4285f4;
+    text-decoration: none;
+    padding: 7px 16px;
+    border: 1.5px solid #d0dffe;
+    border-radius: 40px;
+    background: #f0f4ff;
+  }
+
+  /* Bottom button */
+  .gr-footer {
+    text-align: center;
+  }
+  .gr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4285f4;
+    text-decoration: none;
+    padding: 9px 22px;
+    border: 1.5px solid #d0dffe;
+    border-radius: 40px;
+    background: #f0f4ff;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .gr-status {
+    text-align: center;
+    padding: 32px;
+    color: #999;
+    font-size: 13px;
+    grid-column: 1 / -1;
+  }
+  .gr-status.error { color: #c0392b; }
+
+  @media (max-width: 680px) {
+    .gr-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 440px) {
+    .gr-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="gr-widget">
+
+  <div class="gr-header">
+    <span class="gr-score" id="gr-rating">…</span>
+    <div class="gr-stars" id="gr-stars"></div>
+    <span class="gr-count" id="gr-count">Loading…</span>
+  </div>
+
+  <div class="gr-grid" id="gr-grid">
+    <div class="gr-status">Loading reviews…</div>
+  </div>
+
+  <div class="gr-footer">
+    <a class="gr-btn" href="https://search.google.com/local/writereview?placeid=ChIJv7y87AsKlVQR3qCLUKB2Y3A" target="_blank" rel="noopener noreferrer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Leave us a review
+    </a>
+  </div>
+
+</div>
+
+<script>
+  var PROXY = 'https://script.google.com/macros/s/AKfycbxvMkN-YT1R-WeyWRu-JfPahjzyHTF8G0Em1uB7q0PFTX4PGPui9x8uMV8jiXlUnxTT/exec';
+  var PLACE = 'ChIJv7y87AsKlVQR3qCLUKB2Y3A';
+  var COLORS = ['#4285f4','#34a853','#ea4335','#fbbc05','#6366f1','#0ea5e9'];
+
+  var LOCATION_TERMS = [
+    'portland', 'oregon', 'oregon coast', 'pdx'
+  ];
+
+  function mentionsLocation(text) {
+    var lower = (text || '').toLowerCase();
+    return LOCATION_TERMS.some(function(term) {
+      return lower.indexOf(term) !== -1;
+    });
+  }
+
+  function makeStars(n, cls) {
+    var html = '';
+    for (var i = 1; i <= 5; i++) {
+      html += '<span class="' + cls + (i > n ? ' empty' : '') + '">★</span>';
+    }
+    return html;
+  }
+
+  function timeAgo(ts) {
+    var s = Math.floor(Date.now() / 1000 - ts);
+    if (s < 86400)    return 'Today';
+    if (s < 172800)   return 'Yesterday';
+    if (s < 604800)   return Math.floor(s/86400) + ' days ago';
+    if (s < 2592000)  return Math.floor(s/604800) + ' week' + (Math.floor(s/604800) > 1 ? 's' : '') + ' ago';
+    if (s < 31536000) return Math.floor(s/2592000) + ' month' + (Math.floor(s/2592000) > 1 ? 's' : '') + ' ago';
+    return Math.floor(s/31536000) + ' year' + (Math.floor(s/31536000) > 1 ? 's' : '') + ' ago';
+  }
+
+  fetch(PROXY)
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(data) {
+      if (data.status !== 'OK') throw new Error(data.error_message || data.status);
+      var place = data.result;
+      var rating = place.rating || 0;
+
+      document.getElementById('gr-rating').textContent = rating.toFixed(1);
+      document.getElementById('gr-stars').innerHTML = makeStars(Math.round(rating), 'gr-star');
+      document.getElementById('gr-count').textContent = 'Based on ' + (place.user_ratings_total || 0).toLocaleString() + ' reviews';
+
+      var all = place.reviews || [];
+
+      // Prefer 5-star reviews with no Oregon/Portland mentions, fall back gracefully
+      var reviews = all.filter(function(r) {
+        return r.rating === 5 && !mentionsLocation(r.text);
+      });
+      if (!reviews.length) {
+        reviews = all.filter(function(r) { return !mentionsLocation(r.text); });
+      }
+      if (!reviews.length) {
+        reviews = all.filter(function(r) { return r.rating === 5; });
+      }
+      if (!reviews.length) {
+        reviews = all;
+      }
+
+      var grid = document.getElementById('gr-grid');
+      grid.innerHTML = '';
+
+      reviews.forEach(function(r, i) {
+        var color = COLORS[i % COLORS.length];
+        var initial = (r.author_name || '?')[0].toUpperCase();
+        var card = document.createElement('div');
+        card.className = 'gr-card';
+        card.innerHTML =
+          '<div class="gr-card-top">' +
+            '<div class="gr-avatar" style="background:' + color + '">' +
+              (r.profile_photo_url
+                ? '<img src="' + r.profile_photo_url + '" alt="' + (r.author_name||'') + '" referrerpolicy="no-referrer">'
+                : initial) +
+            '</div>' +
+            '<div>' +
+              '<div class="gr-name">' + (r.author_name || 'Anonymous') + '</div>' +
+              '<div class="gr-date">' + timeAgo(r.time) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="gr-card-stars">' + makeStars(r.rating, 'gr-star') + '</div>' +
+          '<p class="gr-text">' + (r.text || '<em>No written review</em>') + '</p>';
+        grid.appendChild(card);
+      });
+
+      // CTA card at the end
+      var cta = document.createElement('div');
+      cta.className = 'gr-cta-card';
+      cta.innerHTML =
+        '<svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>' +
+        '<p>Read all our reviews on Google.</p>' +
+        '<a href="https://search.google.com/local/reviews?placeid=' + PLACE + '" target="_blank" rel="noopener noreferrer">See all reviews ↗</a>';
+      grid.appendChild(cta);
+    })
+    .catch(function(err) {
+      document.getElementById('gr-grid').innerHTML = '<div class="gr-status error">Could not load reviews: ' + err.message + '</div>';
+      document.getElementById('gr-rating').textContent = '—';
+      document.getElementById('gr-count').textContent = '';
+    });
+</script>
+</body>
+</html>
